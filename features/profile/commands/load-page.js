@@ -6,8 +6,10 @@ async function loadPage(req, res) {
   let userInfo;
   const { user } = req;
   try {
+    console.log(user.id);
     userInfo = await getUser(user && user.id);
   } catch (getUserError) {
+    console.log('this is the error');
     req.session.messages = { databaseError: FETCH_INFO_ERROR_MESSAGE };
   }
 

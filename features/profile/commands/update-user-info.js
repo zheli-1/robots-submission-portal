@@ -13,7 +13,7 @@ async function updateUser(req, res) {
     user = error;
   }
 
-  if (user.email) {
+  if (user.name) {
     req.session.messages = { success: profileSuccessMessage };
     req.session.userInfo = { ...user };
     res.redirect('/profile');

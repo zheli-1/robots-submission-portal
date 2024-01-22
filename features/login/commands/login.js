@@ -10,6 +10,7 @@ const {
 function login(req, res, next) {
   debug('login');
   return passport.authenticate('local', (error, user) => {
+    console.log('login/command/login.js');
     if (error || !user) {
       req.session.messages = {
         errors: { invalidEmailOrPassword: USERNAME_PASSWORD_COMBINATION_ERROR },
@@ -24,6 +25,7 @@ function login(req, res, next) {
         };
         return res.status(500).redirect('/login');
       }
+      console.log('success')
       req.session.messages = { loggedIn: SUCCESSFULLY_LOGGED_IN };
       return next();
     });

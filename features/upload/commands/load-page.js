@@ -1,4 +1,4 @@
-const debug = require('debug')('express:login');
+const debug = require('debug')('express:upload');
 
 async function loadPage(req, res) {
   // debug('login:loadPage', req, res);

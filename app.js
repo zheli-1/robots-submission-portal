@@ -7,10 +7,15 @@ const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+
 const RedisStore = require('connect-redis')(session);
 
 const initAuthMiddleware = require('./features/login/init-auth-middleware');
 const indexRouter = require('./routes/index');
+
+
+const staticFolder = process.env.NODE_ENV === 'development' ? 'public' : 'dist';
+const app = express();
 
 const redisStoreConfig = {
   host: process.env.REDIS_HOST,
@@ -27,12 +32,9 @@ if (process.env.REDIS_PASSWORD) {
 
 const redisStore = new RedisStore(redisStoreConfig);
 
-const staticFolder = process.env.NODE_ENV === 'development' ? 'public' : 'dist';
-const app = express();
-
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 app.use(expressLayouts);
 
 app.use(express.json());
@@ -40,19 +42,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, staticFolder)));
 
-const { COOKIE_EXPIRATION_MS } = process.env;
+// const { COOKIE_EXPIRATION_MS } = process.env;
 app.use(
   session({
-    store: redisStore,
+    // store: redisStore,
     secret: 'keyboard cat',
-    name: process.env.SESSION_COOKIE_NAME,
     resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      expires: Date.now() + parseInt(COOKIE_EXPIRATION_MS, 10),
-      maxAge: parseInt(COOKIE_EXPIRATION_MS, 10),
-    },
+    saveUninitialized: false,
+    // cookie: {
+    //   secure: process.env.NODE_ENV === 'production',
+    //   expires: Date.now() + parseInt(COOKIE_EXPIRATION_MS, 10),
+    //   maxAge: parseInt(COOKIE_EXPIRATION_MS, 10),
+    // },
   })
 );
 
@@ -63,6 +64,8 @@ app.use((req, res, next) => {
   if (req.session) {
     res.locals.messages = req.session.messages;
     res.locals.userInfo = req.session.userInfo;
+    res.locals.tableContents = {};
+    // res.locals.replayUrls = {};
     req.session.messages = {};
   }
   next();

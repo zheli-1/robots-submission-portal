@@ -1,19 +1,17 @@
 const bcrypt = require('bcrypt');
 const knex = require('../../db');
 
-async function createUser({ name, username: email, password }) {
+async function createUser({ name, password }) {
   const hashedPass = await bcrypt.hash(password, 5);
-  const [user] = await knex('users')
+  const [team] = await knex('teams')
     .insert({
-      name,
-      email,
+      name : name,
       password: hashedPass,
       created_at: new Date(),
       updated_at: new Date(),
-      email_verified_at: new Date(),
     })
-    .returning(['email', 'name']);
-  return user;
+    .returning(['name']);
+  return team;
 }
 
 module.exports = {

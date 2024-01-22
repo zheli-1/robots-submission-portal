@@ -6,17 +6,19 @@ async function createUser(req, res) {
   try {
     user = await registerRepo.createUser(req.body);
   } catch (error) {
-    user = error;
+    const { code } = error;
+    console.log(code);
+    const databaseError =
+      code === '23505' ? 'The team name has already been taken.' : 'Something went wrong.';
+    req.session.messages = { errors: databaseError };
+    res.redirect('/register');
   }
-  if (user.email) {
+
+  console.log(user);
+  if (user.name) {
     req.session.messages = { success: registerSuccessMessage };
     res.redirect('/login');
   }
-  const { code } = user;
-  const databaseError =
-    code === '23505' ? 'The email has already been taken.' : 'Something went wrong.';
-  req.session.messages = { databaseError };
-  res.redirect('/register');
 }
 
 module.exports = createUser;

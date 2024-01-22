@@ -1,21 +1,20 @@
 const knex = require('../../db');
 
 async function getUser(id) {
-  const [user] = await knex('users')
+  const [user] = await knex('teams')
     .where('id', id)
-    .select('email', 'name');
+    .select('name');
   return user;
 }
 
 async function updateUserInfo({ name, username: email, id }) {
-  const [user] = await knex('users')
+  const [user] = await knex('teams')
     .where({ id })
     .update({
       name,
-      email,
       updated_at: new Date(),
     })
-    .returning(['email', 'name']);
+    .returning(['name']);
   return user;
 }
 

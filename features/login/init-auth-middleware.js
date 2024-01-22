@@ -1,12 +1,13 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
-const { getUserForLoginData, getUserById } = require('./repository');
+const { getTeamForLoginData, getTeamById } = require('./repository');
 
 module.exports = function initAuthMiddleware(app) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
-      const user = await getUserForLoginData(username, password);
+      const user = await getTeamForLoginData(username, password);
+      console.log('init-auth-middleware');
       if (!user) {
         return done(null, false);
       }
@@ -17,7 +18,7 @@ module.exports = function initAuthMiddleware(app) {
   passport.serializeUser((user, done) => done(null, user.id));
 
   passport.deserializeUser(async (id, done) => {
-    const user = await getUserById(id);
+    const user = await getTeamById(id);
     if (!user) {
       return done(`Could not deserialize user with id ${id}`);
     }

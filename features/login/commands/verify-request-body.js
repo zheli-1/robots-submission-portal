@@ -5,7 +5,7 @@ const constants = require('../constants');
 const { PASSWORD_MAX, PASSWORD_MIN } = constants;
 
 const schema = Joi.object().keys({
-  username: Joi.string().email({ minDomainAtoms: 2 }),
+  username: Joi.string(),
   password: Joi.string()
     .min(PASSWORD_MIN)
     .max(PASSWORD_MAX),

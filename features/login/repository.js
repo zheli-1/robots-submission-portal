@@ -5,42 +5,42 @@ const knexConfig = require('../../db/knexfile');
 
 const knex = Knex(knexConfig[process.env.NODE_ENV]);
 
-async function getUserForLoginData(email, password) {
-  const [user] = await knex('users')
+async function getTeamForLoginData(name, password) {
+  const [team] = await knex('teams')
     .select()
-    .where({ email })
+    .where({ name })
     .limit(1);
 
-  if (!user) {
+  if (!team) {
     return null;
   }
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
+  const isPasswordValid = await bcrypt.compare(password, team.password);
 
   if (!isPasswordValid) {
     return null;
   }
 
   return {
-    id: user.id,
-    username: user.email,
-    created_at: user.created_at,
+    id: team.id,
+    username: team.name,
+    created_at: team.created_at,
   };
 }
 
-async function getUser(query) {
-  const [user] = await knex('users')
+async function getTeam(query) {
+  const [team] = await knex('teams')
     .select()
     .where(query)
     .limit(1);
-  return user;
+  return team;
 }
 
-async function getUserById(id) {
-  return getUser({ id });
+async function getTeamById(id) {
+  return getTeam({ id });
 }
 
 module.exports = {
-  getUserForLoginData,
-  getUserById,
+  getTeamForLoginData,
+  getTeamById,
 };
