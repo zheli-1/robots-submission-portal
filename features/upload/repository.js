@@ -7,13 +7,13 @@ const {
 async function listS3Bucket(req, res) {
 
   aws.config.update({
-    accessKeyId: "AKIAUJTCN6PSWMOOCOZN",
-    secretAccessKey: "hsa2DAV3EzbOhtqR5nP0hKP1mKGhFEHoFNOAAaqU",
+    accessKeyId: "", //put your aws key Id here
+    secretAccessKey: "", //put your aws key here
     region: REGION,
   });
   const s3 = new aws.S3();
   const params = {
-    Bucket: "battlecodebucket",
+    Bucket: "", //s3 bucket name
   };
 
   const s3Response = await s3.listObjectsV2(params).promise();
@@ -27,7 +27,7 @@ async function listS3Bucket(req, res) {
     if(contents[i].Key.split("/")[0] === "matches" && contents[i].Key.split("/")[1] !== "")
     {
       const urlParams = {
-        Bucket:  "battlecodebucket",
+        Bucket:  "", //s3 bucket name
         Key: contents[i].Key,
         Expires: 3600
       }
